@@ -1,6 +1,13 @@
 <template lang="">
   <div>
+    <div class="__row">
+      <span v-for="perPageOption in [5, 10, 15, 50]" :key="perPageOption">
+        <button class="pagination-button" :class="perPageOption === perPage ? 'active' : ''" @click="setPerPage(perPageOption)">{{perPageOption}}</button>
+      </span>
+    </div>
+   
     <div class="pagination-row">
+     
       <!-- <input type="text" class="pagination-input" v-model="search" @keyup.enter="searchRepo" /> -->
       <button class="pagination-button" @click="changePage(pageNumber - 1)" :disabled="pageNumber <= 1">&lt;-</button>
       <div v-for="(item, index) in new Array(numberOfPages)" :key="index">
@@ -27,7 +34,7 @@ export default {
       repos: [],
       pageNumber:Number(this.$route.query.pageNumber)  || 1,
       totalRepos:111,
-      perPage:10,
+      perPage:Number(this.$route.query.perPage) || 5,
       // search:Number(this.$route.query.search) || "",
     };
   },
@@ -49,12 +56,25 @@ export default {
       this.pageNumber = page;
       this.getRepos();
       this.$router.push({path:this.$route.path, query:{
-        // ...this.$route.query,
+        ...this.$route.query,
         pageNumber:page
       }
     });
-    }
-  
+    },
+    setPerPage(perPage){
+      this.perPage = perPage;
+      let numberOfPages = Math.ceil(this.totalRepos / this.perPage);
+      if( numberOfPages <= this.pageNumber){
+        this.pageNumber = numberOfPages;
+      }
+      this.$router.push({path:this.$route.path, query:{
+        ...this.$route.query,
+        perPage:perPage,
+        pageNumber:this.pageNumber
+      }
+    });
+      this.getRepos();
+    }, 
   },
   computed:{
     numberOfPages(){
@@ -123,6 +143,12 @@ h1{
   border-radius: 4px;
   padding: 5px 10px;
   margin: 0 5px;
+}
+.__row{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
 </style>
