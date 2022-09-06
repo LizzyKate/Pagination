@@ -1,17 +1,14 @@
 <template>
   <div>
-    <pagination-bar-vue/>
+   <router-view></router-view>
   </div>
 </template>
 
 <script>
-import PaginationBarVue from './components/PaginationBar.vue'
+
 
 export default {
   name: 'App',
-  components: {
-    PaginationBarVue
-  }
 }
 </script>
 

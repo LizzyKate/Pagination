@@ -1,6 +1,7 @@
 <template lang="">
   <div>
     <div class="pagination-row">
+      <!-- <input type="text" class="pagination-input" v-model="search" @keyup.enter="searchRepo" /> -->
       <button class="pagination-button" @click="changePage(pageNumber - 1)" :disabled="pageNumber <= 1">&lt;-</button>
       <div v-for="(item, index) in new Array(numberOfPages)" :key="index">
         <button class="pagination-button" @click="changePage(index + 1)" :class="pageNumber === index + 1 ? 'active' : ''">{{ index + 1 }}</button>
@@ -24,9 +25,10 @@ export default {
   data() {
     return {
       repos: [],
-      pageNumber:1,
+      pageNumber:Number(this.$route.query.pageNumber)  || 1,
       totalRepos:111,
-      perPage:10
+      perPage:10,
+      // search:Number(this.$route.query.search) || "",
     };
   },
   mounted() {
@@ -46,13 +48,30 @@ export default {
     changePage(page){
       this.pageNumber = page;
       this.getRepos();
-    },
+      this.$router.push({path:this.$route.path, query:{
+        // ...this.$route.query,
+        pageNumber:page
+      }
+    });
+    }
+  
   },
   computed:{
     numberOfPages(){
       return Math.ceil(this.totalRepos / this.perPage);
     }
   },
+  // watch:{
+  //   search(newValue){
+  //     this.getRepos();
+  //     this.$router.push({path:this.$route.path, query:{
+  //       ...this.$route.query,
+  //       pageNumber:1, 
+  //       search:newValue
+  //     }
+  //   });
+  //   }
+  // }
 };
 </script>
 <style scoped>
@@ -98,6 +117,12 @@ h1{
 
 :disabled{
   cursor: auto;
+}
+.pagination-input{
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin: 0 5px;
 }
 
 </style>
